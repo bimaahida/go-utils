@@ -1,4 +1,12 @@
+changelog_args=-o CHANGELOG.md -tag-filter-pattern '^v'
+
 test_command=richgo test ./... $(TEST_ARGS) -v --cover
+
+changelog:
+ifdef version
+	$(eval changelog_args=--next-tag $(version) $(changelog_args))
+endif
+	git-chglog $(changelog_args)
 
 check-cognitive-complexity:
 	find . -type f -name '*.go' \
@@ -24,4 +32,4 @@ test-only: check-gotest
 
 test: lint test-only
 
-.PHONY: lint check-gotest test-only test check-cognitive-complexity
+.PHONY: lint check-gotest test-only test check-cognitive-complexity changelog
